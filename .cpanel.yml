@@ -1,5 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/gq2vy7ia7msz/public_html/
-    - /bin/cp -R /home/gq2vy7ia7msz/public_html/SP4_Web $DEPLOYPATH

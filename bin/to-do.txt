@@ -1,0 +1,1 @@
+Make sure app can scan the qr code from the bin!
