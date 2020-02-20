@@ -1,6 +1,6 @@
 <?php
     require_once "DB.php";
-
+    require_once "../php/lib/qrcode/qrlib.php";
     class Bin extends DB{
         private $table = "tb_bin";
         public function __construct()
@@ -12,14 +12,31 @@
             parent::__destruct();
         }
         public function getLocationData($code){
-            $stmt = $this->prepare("SELECT * FROM $this->table WHERE bin_code=$code");
+            $stmt = $this->prepare("SELECT bin_name FROM $this->table WHERE bin_code=$code");
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
         public function exists($code){
-            $stmt = $this->prepare("SELECT * FROM $this->table WHERE bin_code=$code");
+            $stmt = $this->prepare("SELECT bin_id FROM $this->table WHERE bin_code=$code");
             $stmt->execute();
             return $stmt->fetchColumn() > 0;
+        }
+        public function getInfo($code){
+            $stmt = $this->prepare("SELECT is_scanned, bin_json, is_generated FROM $this->table WHERE bin_code=$code");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        public static function generateQR($data){
+            ob_start();
+            QRcode::png(http_build_query($data));
+            $img = base64_encode(ob_get_clean());
+            header("content-type: text/html");
+            ob_end_clean();
+            return $img;
+        }
+        public function update($json, $gen, $code){
+            $stmt = $this->prepare("UPDATE $this->table SET is_generated = ?, bin_json = ? WHERE bin_code = ?");
+            $stmt->execute([$gen, $json, $code]);
         }
     }
 ?>

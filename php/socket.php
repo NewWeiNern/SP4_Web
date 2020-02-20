@@ -1,5 +1,5 @@
 <?php
-exec("C:\\xampp\php\php.exe socket.php");
+// exec("C:\\xampp\php\php.exe socket.php");
 set_time_limit(0);
 
 use Ratchet\MessageComponentInterface;
