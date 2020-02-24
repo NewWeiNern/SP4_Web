@@ -37,7 +37,7 @@ if($code){ // prevent any code from being inserted
     <?php if(!empty($code) && !empty($name)): ?>
     <img id="qrCode" name="qrCode" src="data:image/png;base64,<?= $base64;?>" style="height:150px; width:150px;"/>
     <script> 
-        const socket = new WebSocket("ws://"+ window.location.host +":8080/");
+        const socket = new WebSocket("ws://"+ window.location.host +":8080/bin");
         let socket_connected = false;
         let Interval;
 
@@ -52,10 +52,7 @@ if($code){ // prevent any code from being inserted
             console.log("Socket successfully established.");
         }
         socket.onmessage = (e)=>{
-            console.log(e);
-            console.log($(`<div>
-                <p id="user"></p>
-            </div>`));
+            console.log(JSON.parse(e.data).read);
         }
         socket.onclose = ()=>{
             Interval = setInterval(sendRequest, 15000);

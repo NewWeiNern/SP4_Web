@@ -22,7 +22,7 @@
             return $stmt->fetchColumn() > 0;
         }
         public function getInfo($code){
-            $stmt = $this->prepare("SELECT is_scanned, bin_json, is_generated FROM $this->table WHERE bin_code=$code");
+            $stmt = $this->prepare("SELECT is_scanned, bin_json, is_generated, is_opened FROM $this->table WHERE bin_code=$code");
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
@@ -37,6 +37,12 @@
         public function update($json, $gen, $code){
             $stmt = $this->prepare("UPDATE $this->table SET is_generated = ?, bin_json = ? WHERE bin_code = ?");
             $stmt->execute([$gen, $json, $code]);
+        }
+        public function isOpened($bool, $code){
+            $this->prepare("UPDATE $this->table SET is_opened = ? WHERE bin_code = ?")->execute([$bool, $code]);
+        }
+        public function isScanned($bool, $code){
+            $this->prepare("UPDATE $this->table SET is_scanned = ? WHERE bin_code = ?")->execute([$bool, $code]);
         }
     }
 ?>

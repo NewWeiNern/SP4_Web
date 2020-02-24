@@ -9,6 +9,7 @@ use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 
 require_once "../php/lib/Ratchet/autoload.php";
+require_once "../php/class/bin.class.php";
 
 class Chat implements MessageComponentInterface{
     protected $clients;
@@ -31,33 +32,49 @@ class Chat implements MessageComponentInterface{
 
     public function onMessage(\Ratchet\ConnectionInterface $from, $msg)
     {
+        print(var_dump($from->httpRequest->getUri()->getPath()));
+        $bin = new Bin();
         $from_id = $from->resourceId;
         $data = json_decode($msg);
         $type = $data->type;
-
+        $qr = $data->QR;
         switch($type){
-            case "chat" :
-                $user_id = $data->user_id;
-                $chat_msg = $data->chat_msg;
-                $response_from = "<span style='color:#999'><b>".$user_id.":</b> ".$chat_msg."</span><br><br>";
-                $response_to = "<b>".$user_id."</b>: ".$chat_msg."<br><br>";
-                $from->send(json_encode(array("type"=>$type, "msg"=>$response_from)));
+            case "bin" : 
 
-                foreach($this->clients as $client){
-                    if($from != $client){
-                        $client->send(json_encode(array("type"=>$type, "msg"=>$response_to)));
-                    }
-                }
             break;
-            case "phone" : 
-                $from->send(json_encode(array("msg"=>"Hello Phone user")));
+            case "app" : 
+                // print(count($this->clients));
+                $from->send(json_encode(array("read"=>"Scanned Location: ".$bin->getLocationData($qr->code)["bin_name"])));
                 foreach($this->clients as $client){
                     if($from != $client){
-                        $client->send(json_encode(array("type"=>$type, "msg"=>"Sent from phone")));
+                        $client->send(json_encode(array("read"=>"Scanned From: $data->user")));
                     }
                 }
             break;
         }
+        // switch($type){
+        //     case "chat" :
+        //         $user_id = $data->user_id;
+        //         $chat_msg = $data->chat_msg;
+        //         $response_from = "<span style='color:#999'><b>".$user_id.":</b> ".$chat_msg."</span><br><br>";
+        //         $response_to = "<b>".$user_id."</b>: ".$chat_msg."<br><br>";
+        //         $from->send(json_encode(array("type"=>$type, "msg"=>$response_from)));
+
+        //         foreach($this->clients as $client){
+        //             if($from != $client){
+        //                 $client->send(json_encode(array("type"=>$type, "msg"=>$response_to)));
+        //             }
+        //         }
+        //     break;
+        //     case "phone" : 
+        //         $from->send(json_encode(array("msg"=>"Hello Phone user")));
+        //         foreach($this->clients as $client){
+        //             if($from != $client){
+        //                 $client->send(json_encode(array("type"=>$type, "msg"=>"Sent from phone")));
+        //             }
+        //         }
+        //     break;
+        // }
     }
 
     public function onError(\Ratchet\ConnectionInterface $conn, \Exception $e)
