@@ -20,7 +20,7 @@ if($code){ // prevent any code from being inserted
         $data = json_decode($info["bin_json"]);
     }
     
-    $base64 = BIN::generateQR([$data]);
+    $base64 = BIN::generateQR([$data]); // Generate QR must be here due to output buffer
 }
 
 ?>
@@ -37,21 +37,7 @@ if($code){ // prevent any code from being inserted
 <?= $code;?>
     <?php if(!empty($code) && !empty($name)): ?>
     <img id="qrCode" name="qrCode" src="data:image/png;base64,<?= $base64;?>" style="height:150px; width:150px;"/>
-    <script>
-        let socket = new WebSocket("ws://localhost:8080/");
-        socket.onopen = e=>{
-            console.log(e);
-        }
-        socket.onmessage = e=>{
-            console.log(e);
-        }
-        socket.onerror = e=>{
-            console.log(e);
-        }
-        socket.onclose = e=>{
-            console.log(e);
-        }
-    </script>
+    <script src="bin/js/main.js"></script>
     <?php else:?>
         Bin not found!
     <?php endif;?>

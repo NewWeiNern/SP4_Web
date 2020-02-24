@@ -8,7 +8,7 @@ use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 
-require_once "./lib/Ratchet/autoload.php";
+require_once "../php/lib/Ratchet/autoload.php";
 
 class Chat implements MessageComponentInterface{
     protected $clients;
@@ -46,6 +46,14 @@ class Chat implements MessageComponentInterface{
                 foreach($this->clients as $client){
                     if($from != $client){
                         $client->send(json_encode(array("type"=>$type, "msg"=>$response_to)));
+                    }
+                }
+            break;
+            case "phone" : 
+                $from->send(json_encode(array("msg"=>"Hello Phone user")));
+                foreach($this->clients as $client){
+                    if($from != $client){
+                        $client->send(json_encode(array("type"=>$type, "msg"=>"Sent from phone")));
                     }
                 }
             break;
