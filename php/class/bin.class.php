@@ -44,6 +44,9 @@
         public function isScanned($bool, $code){
             $this->prepare("UPDATE $this->table SET is_scanned = ? WHERE bin_code = ?")->execute([$bool, $code]);
         }
+        public function isGenerated($bool, $code){
+            $this->prepare("UPDATE $this->table SET is_generated = ? WHERE bin_code = ?")->execute([$bool, $code]);
+        }
     }
 ?>
 

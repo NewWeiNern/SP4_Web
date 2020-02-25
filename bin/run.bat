@@ -1,1 +1,1 @@
-C:\\xampp\php\php.exe socket.php
+C:\\xampp\php\php.exe php/socket.php

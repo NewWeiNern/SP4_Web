@@ -1,4 +1,10 @@
 <?php
+/**
+ * Due to iPhone not allowing user to access to Camera without https
+ * Socket will be unused!
+ * 
+ */
+
 // exec("C:\\xampp\php\php.exe socket.php");
 set_time_limit(0);
 
@@ -43,38 +49,15 @@ class Chat implements MessageComponentInterface{
 
             break;
             case "app" : 
-                // print(count($this->clients));
                 $from->send(json_encode(array("read"=>"Scanned Location: ".$bin->getLocationData($qr->code)["bin_name"])));
                 foreach($this->clients as $client){
+                    print($client->httpRequest->getUri()->getPath());
                     if($from != $client){
                         $client->send(json_encode(array("read"=>"Scanned From: $data->user")));
                     }
                 }
             break;
         }
-        // switch($type){
-        //     case "chat" :
-        //         $user_id = $data->user_id;
-        //         $chat_msg = $data->chat_msg;
-        //         $response_from = "<span style='color:#999'><b>".$user_id.":</b> ".$chat_msg."</span><br><br>";
-        //         $response_to = "<b>".$user_id."</b>: ".$chat_msg."<br><br>";
-        //         $from->send(json_encode(array("type"=>$type, "msg"=>$response_from)));
-
-        //         foreach($this->clients as $client){
-        //             if($from != $client){
-        //                 $client->send(json_encode(array("type"=>$type, "msg"=>$response_to)));
-        //             }
-        //         }
-        //     break;
-        //     case "phone" : 
-        //         $from->send(json_encode(array("msg"=>"Hello Phone user")));
-        //         foreach($this->clients as $client){
-        //             if($from != $client){
-        //                 $client->send(json_encode(array("type"=>$type, "msg"=>"Sent from phone")));
-        //             }
-        //         }
-        //     break;
-        // }
     }
 
     public function onError(\Ratchet\ConnectionInterface $conn, \Exception $e)
